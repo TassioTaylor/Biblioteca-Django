@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+{% load filtros %}
+
+{% block 'conteudo' %}
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel2" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Deseja mesmo excluir?</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+             <a class="btn btn-danger" href="{% url 'excluir_livro' id_livro %}">Excluir</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="container">
+        <br>
+       <form action="" method="POST">{% csrf_token %}
+        <p>
+            <label>Nome:</label>
+            <input class="form-control" type="text" value="{{livro.nome}}">
+        </p>
+
+        <p>
+            <label>Autor:</label>
+            <input class="form-control" type="text" value="{{livro.autor}}">
+        </p>
+
+        <p>
+            <label>Co-Autor:</label>
+            <input class="form-control" type="text" value="{{livro.co_autor}}">
+        </p>
+
+        <p>
+            <label>Data:</label>
+            <input class="form-control" type="datetime" value="{{livro.data_cadastro}}">
+        </p>
+
+        <p>
+            <label>Categoria:</label>
+            <select style="width: 20%" class="form-control" name="categoria" >
+            {% for i in categoria_livro %}
+
+                {% if livro.categoria == i %}
+                    <option selected> {{i}} </option>
+                {{ else }}
+                    <opition>{{i}} </opition>
+                {% endif %}
+
+            {% endfor %}
+            </select>
+        </p>
+
+
+        <br>
+        {% if livro.emprestado %}
+            <input class="transform: scale(2.0)" checked type="checkbox" >
+        {% endif %}
+
+        <input type="submit" class="btn btn-success btn-lg" value="salvar">
+       </form>
+        <br>
+            <button type="button" class="btn btn-danger btn-lg" value="" data-toggle="modal" data-target="#exampleModal2">
+                Excluir
+             </button>
+        <hr>
+        <h2>Historico do Emprestimo</h2>
+        <table class="table table-striped table-dark">
+  <thead>
+    <tr>
+      <th scope="col">Nome</th>
+      <th scope="col">Data Emprestimo</th>
+      <th scope="col">Data Devolção</th>
+      <th scope="col">Tempo de Duração</th>
+    </tr>
+  </thead>
+  <tbody>
+   {% for i in emprestimo %}
+    <tr>
+     {% if i.nome_emprestado_anonimo %}
+      <th scope="row">{{i.nome_emprestado_anonimo}}</th>
+     {% else %}
+      <th scope="row">{{i.nome_emprestado}}</th>
+     {% endif %}
+      <td>{{i.data_emprestimo}}</td>
+      <td>{{i.data_devolucao}}</td>
+      <td>{{ i.data_devolucao|mostra_duracao:i.data_emprestimo }} Dias</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+ </div>
+
+
+{% endblock %}
